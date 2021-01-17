@@ -57,16 +57,20 @@ public class SqlRuParse {
     }
 
     public static void main(String[] args) throws Exception {
-        Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
-        Elements row = doc.select(".postslisttopic");
-        Elements date = doc.select(".Altcol");
-        List<Element> element = date.stream()
-                .filter(x -> x.text().contains(", ")).collect(Collectors.toList());
-        for (int i = 0; i < row.size(); i++) {
-            Element href = row.get(i).child(0);
-            System.out.println(href.attr("href"));
-            System.out.println(href.text());
-            System.out.println(element.get(i).text());
+        String address = "https://www.sql.ru/forum/job-offers/";
+        for (int i = 1; i < 6; i++) {
+            String duf = address + i;
+            Document doc = Jsoup.connect(duf).get();
+            Elements row = doc.select(".postslisttopic");
+            Elements date = doc.select(".Altcol");
+            List<Element> element = date.stream()
+                    .filter(x -> x.text().contains(", ")).collect(Collectors.toList());
+            for (int j = 0; j < row.size(); j++) {
+                Element href = row.get(j).child(0);
+                System.out.println(href.attr("href"));
+                System.out.println(href.text());
+                System.out.println(element.get(j).text());
+            }
         }
     }
 }
