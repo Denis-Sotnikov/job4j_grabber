@@ -10,7 +10,6 @@ import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
 public class SqlRuParse implements Parse {
     private DateFormatSymbols rusSymbols = new DateFormatSymbols() {
         @Override
@@ -99,7 +98,10 @@ public class SqlRuParse implements Parse {
             Elements row = doc.select(".postslisttopic");
             for (int j = 0; j < row.size(); j++) {
                 Element href = row.get(j).child(0);
-                list.add(parseAd(href.attr("href")));
+                Post post = detail(href.attr("href"));
+                post.setLink(href.attr("href"));
+                post.setName(href.text());
+                list.add(post);
             }
         return list;
     }
