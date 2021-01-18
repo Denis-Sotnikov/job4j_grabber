@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,9 +57,21 @@ public class SqlRuParse {
         return format.parse(builder.toString());
     }
 
+    public Post parseAd(String address) throws IOException, ParseException {
+        Document doc = Jsoup.connect(address).get();
+        Elements row = doc.select(".msgBody");
+        Elements date = doc.select(".msgFooter");
+        Post post = new Post();
+        post.setText(row.get(1).text());
+        post.setDateOfCreation(parseDate(date.get(0).text().split(" \\[")[0]));
+        System.out.println(post.toString());
+        return post;
+    }
+
     public static void main(String[] args) throws Exception {
+        SqlRuParse ruParse = new SqlRuParse();
         String address = "https://www.sql.ru/forum/job-offers/";
-        for (int i = 1; i < 6; i++) {
+        for (int i = 1; i < 2; i++) {
             String duf = address + i;
             Document doc = Jsoup.connect(duf).get();
             Elements row = doc.select(".postslisttopic");
@@ -68,6 +81,7 @@ public class SqlRuParse {
             for (int j = 0; j < row.size(); j++) {
                 Element href = row.get(j).child(0);
                 System.out.println(href.attr("href"));
+                ruParse.parseAd(href.attr("href"));
                 System.out.println(href.text());
                 System.out.println(element.get(j).text());
             }
