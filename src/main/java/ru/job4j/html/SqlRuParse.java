@@ -10,7 +10,6 @@ import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SqlRuParse implements Parse {
     private DateFormatSymbols rusSymbols = new DateFormatSymbols() {
