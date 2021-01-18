@@ -6,16 +6,42 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class SqlRuParse implements Parse {
+    private DateFormatSymbols rusSymbols = new DateFormatSymbols() {
+        @Override
+        public String[] getMonths() {
+            return new String[]{"янв", "фев", "мар", "апр", "май", "июн",
+                    "июл", "авг", "сен", "окт", "ноя", "дек"};
+        }
+    };
+
+    public String changeStringDate(String date) {
+        String[] array = date.toString().split(" ");
+        for (int i = 0; i < rusSymbols.getMonths().length; i++) {
+            if (i == Integer.parseInt(array[1])) {
+                array[1] = rusSymbols.getMonths()[i + 1];
+                date = Arrays.toString(array).replace("[", "")
+                        .replace("]", "")
+                        .replaceFirst(",", "")
+                        .replaceFirst(",", "")
+                        .replaceFirst(",", "");
+                break;
+            }
+        }
+        return date;
+    }
+
     public Date parseDate(String date) throws ParseException {
         StringBuilder builder = new StringBuilder();
         Calendar calendar = new GregorianCalendar();
         Date ate = new Date();
+        String dat = null;
         if (date.contains("сегодня") || date.contains("вчера")) {
             if (date.contains("сегодня")) {
                 builder.append(calendar.get(Calendar.DAY_OF_MONTH));
@@ -25,6 +51,8 @@ public class SqlRuParse implements Parse {
                 builder.append(calendar.get(Calendar.YEAR));
                 builder.append(", ");
                 builder.append(date.split(" ")[1]);
+                dat = builder.toString();
+                dat = changeStringDate(dat);
             } else {
                 if (date.contains("вчера")) {
                     long time = ate.getTime() - 86400000;
@@ -37,21 +65,22 @@ public class SqlRuParse implements Parse {
                     builder.append(calendar.get(Calendar.YEAR));
                     builder.append(", ");
                     builder.append(date.split(" ")[1]);
+                    dat = builder.toString();
+                    dat = changeStringDate(dat);
                 }
             }
         } else {
             String[] array = date.split(" ");
-            String[] atta = {"янв", "фев", "мар", "апр", "мая", "июн",
-                    "июл", "авг", "сен", "окт", "ноя", "дек"};
-            for (int i = 0; i < atta.length; i++) {
-                if (atta[i].equals(array[1])) {
+            for (int i = 0; i < rusSymbols.getMonths().length; i++) {
+                if (rusSymbols.getMonths()[i].equals(array[1])) {
                     builder.append(date
-                            .replaceFirst(array[1], String.valueOf(i + 1)));
+                            .replaceFirst(array[1], rusSymbols.getMonths()[i]));
                 }
             }
+            dat = builder.toString();
         }
-        SimpleDateFormat format = new SimpleDateFormat("dd MM yyyy, HH:mm");
-        return format.parse(builder.toString());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy, HH:mm", rusSymbols);
+        return formatter.parse(dat);
     }
 
     public Post parseAd(String address) throws IOException, ParseException {
@@ -71,7 +100,6 @@ public class SqlRuParse implements Parse {
             Elements row = doc.select(".postslisttopic");
             for (int j = 0; j < row.size(); j++) {
                 Element href = row.get(j).child(0);
-                //System.out.println(href.attr("href"));
                 list.add(parseAd(href.attr("href")));
             }
         return list;
