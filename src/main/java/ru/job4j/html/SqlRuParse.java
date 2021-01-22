@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +36,7 @@ public class SqlRuParse implements Parse {
         return date;
     }
 
-    public Date parseDate(String date) throws ParseException {
+    public Timestamp parseDate(String date) throws ParseException {
         StringBuilder builder = new StringBuilder();
         Calendar calendar = new GregorianCalendar();
         Date ate = new Date();
@@ -78,7 +79,7 @@ public class SqlRuParse implements Parse {
             dat = builder.toString();
         }
         SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy, HH:mm", rusSymbols);
-        return formatter.parse(dat);
+        return new Timestamp(formatter.parse(dat).getTime());
     }
 
     public Post parseAd(String address) throws IOException, ParseException {

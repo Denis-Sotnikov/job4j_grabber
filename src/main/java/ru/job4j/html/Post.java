@@ -1,5 +1,6 @@
 package ru.job4j.html;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -7,12 +8,12 @@ public class Post {
     private String name;
     private String text;
     private String link;
-    private Date dateOfCreation;
+    private Timestamp dateOfCreation;
 
     public Post() {
     }
 
-    public Post(String name, String text, String link, Date dateOfCreation) {
+    public Post(String name, String text, String link, Timestamp dateOfCreation) {
         this.text = text;
         this.dateOfCreation = dateOfCreation;
         this.name = name;
@@ -47,7 +48,7 @@ public class Post {
         return dateOfCreation;
     }
 
-    public void setDateOfCreation(Date dateOfCreation) {
+    public void setDateOfCreation(Timestamp dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
     }
 
