@@ -44,7 +44,7 @@ public class Post {
         this.text = text;
     }
 
-    public Date getDateOfCreation() {
+    public Timestamp getDateOfCreation() {
         return dateOfCreation;
     }
 
