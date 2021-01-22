@@ -28,8 +28,7 @@ public class PsqlStore implements Store, AutoCloseable {
                     statement.setString(1, post.getName());
                     statement.setString(2, post.getText());
                     statement.setString(3, post.getLink());
-                    long d = post.getDateOfCreation().getTime();
-                    statement.setTimestamp(4, new Timestamp(d));
+                    statement.setDate(4, new java.sql.Date(post.getDateOfCreation().getTime()));
                     statement.execute();
         } catch (Exception e) {
             e.printStackTrace();
