@@ -59,10 +59,14 @@ public class Grabber implements Grab {
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
             try {
-                for (Post p : parse.list("https://www.sql.ru/forum/job-offers/1")) {
-                    System.out.println(p);
-                    store.save(p);
+                    String address = "https://www.sql.ru/forum/job-offers/";
+                    for (int i = 1; i < 6; i++) {
+                    String duf = address + i;
+                    for (Post p : parse.list(duf)) {
+                        System.out.println(p);
+                        store.save(p);
                 }
+        }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ParseException e) {

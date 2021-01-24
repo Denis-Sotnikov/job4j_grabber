@@ -15,6 +15,7 @@ public class PsqlStore implements Store, AutoCloseable {
             Class.forName(cfg.getProperty("jdbc.driver"));
             cnn = DriverManager.getConnection(cfg.getProperty("url"),
                     cfg.getProperty("username"), cfg.getProperty("password"));
+            System.out.println("cnn.getTransactionIsolation() = " + cnn.getTransactionIsolation());
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -24,7 +25,8 @@ public class PsqlStore implements Store, AutoCloseable {
     public void save(Post post) {
         try (PreparedStatement statement =
                      cnn.prepareStatement("insert into grabber"
-                             + " (name, text, link, date_of_created) VALUES (?, ?, ?, ?)")) {
+                             + " (name, text, link, date_of_created) VALUES (?, ?, ?, ?)"
+                             + "ON CONFLICT DO NOTHING")) {
                     statement.setString(1, post.getName());
                     statement.setString(2, post.getText());
                     statement.setString(3, post.getLink());
